@@ -1,0 +1,44 @@
+# === Backups grandes (reproducibles, fuera del repo) ===
+backups/*.sql
+backups/*.wpress
+backups/*.zip
+backups/*.tar.gz
+
+# === Lighthouse reports JSON (grandes, regenerables) ===
+lighthouse_reports/*.json
+
+# === Imágenes pesadas DALL-E (privadas, no versionar en remoto público) ===
+# Si en algún momento queremos compartir, mover a /assets/ y quitar de aquí.
+img_ofertas/*.png
+!img_ofertas/mapa_*.png
+
+# === Python caches y temporales ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+
+# === Secretos: NUNCA versionar ===
+*.env
+.env.*
+*credentials*
+*secret*
+ssh-private-keys/
+*.pem
+*.key
+
+# === Archivos de sistema ===
+.DS_Store
+Thumbs.db
+desktop.ini
+*.lnk
+
+# === IDE / editores ===
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+*~
