@@ -107,33 +107,52 @@
 - **NetSolutions**: peticiones cortas y operativas. Sin explicaciones técnicas largas, sin justificaciones, sin contexto educativo. [Ver `feedback-netsolutions-tono` en memoria.]
 - **Pablo**: directo, conciso. Sin sobrecargar con detalles que no pidió.
 
-## 7. Workflow de cambios seguro (obligatorio)
+## 7. Protocolo de seguridad operativa (obligatorio)
 
-```
-1. SNAPSHOT antes:
-   - ssh hg "cd ~/web && wp db export ~/backups/pre-{cambio}-$(date +%Y%m%d-%H%M).sql"
-   - Anotar IDs y tamaños de objetos a modificar
-   - Capturar HTML/CSS frontend si aplica (curl)
+### 7.1 Alcance previsible
 
-2. CAMBIO:
-   - Para code/script: subir a wp_scripts/ local, scp a servidor, wp eval-file
-   - Para BBDD: wp_unslash() antes de decode, wp_slash() antes de encode
-   - Para frontend (paginas/posts): trabajar en duplicado primero si es estructural
+La renovación va por **módulos pequeños priorizados**. Las acciones que se ejecutan son:
 
-3. VERIFICACIÓN:
-   - Releer objeto modificado: tamaño coherente, claves esperadas presentes
-   - Frontend: curl + grep marcadores esperados
-   - Lighthouse antes/después si afecta a rendimiento
+1. **Editar contenido de una página** (texto, imagen, bloque, shortcode). Ej.: slider de la portada, /ofertas-empleo/.
+2. **Editar un widget o un menú** del Customizer. Ej.: widget Newsletter del pie.
+3. **Editar o crear un mu-plugin propio** (carpeta `wp-content/mu-plugins/`).
 
-4. SI ALGO FALLA:
-   - wp_restore_post_revision({rev_id}) para posts
-   - wp db import del snapshot pre-cambio
-   - SCP del backup del archivo modificado
+**Fuera de alcance sin autorización explícita por sesión**:
+- Instalar/desinstalar/activar/desactivar plugins de terceros.
+- Editar archivos del núcleo de WordPress o del tema Flatsome.
+- Tocar `wp-config.php`, `.htaccess`, `robots.txt`.
+- Lanzar SQL directo sobre la base de datos.
+- Modificar tareas programadas del servidor o de WP-Cron.
+- Cambiar la configuración de Cloudflare (es de NetSolutions).
 
-5. DOCUMENTAR:
-   - Qué se cambió, por qué, cómo verificar
-   - Si es lección reutilizable: añadir memoria de feedback
-```
+Excepción reconocida (pendiente cuando se valide visualmente el slider): `wp plugin deactivate revslider` — sigue requiriendo OK verbal en la sesión.
+
+### 7.2 Antes de pedir nada a Pablo: visibilidad propia primero
+
+Antes de proponer cambios o pedirle a Pablo que mire una opción en wp-admin:
+
+- **Si afecta al frontend visual** → `python scripts_visuales/snapshot_paginas.py {slug}` antes y después. Si hay rotaciones JS (slider) → `python scripts_visuales/snapshot_slider.py`.
+- **Si afecta a config de plugin/widget/Toolset View** → consultar `snapshots/wp_state/{TS}/` (regenerar con `bash scripts_inventario/dump_wp_state.sh` si está desfasado). Si la opción/objeto no aparece, **no inventarla**: preguntar a Pablo "no encuentro X en el inventario, ¿existe en otro sitio?".
+
+### 7.3 Las 3 reglas mecánicas para escribir en producción
+
+**Regla 1 — Backup antes de tocar.** Cualquier operación que modifique algo (edición de post_content, update_option, edición/creación de mu-plugin, cualquier `POST/PUT/DELETE` REST a producción) empieza guardando el estado anterior en `backups/{YYYYMMDD-HHMM}_{contexto}.txt`. Sin ese archivo en disco, no se ejecuta la operación.
+
+**Regla 2 — Smoke test + rollback automático.** Tras cada escritura:
+- `curl -I` a las 5 URLs core (home, /ofertas-empleo/, /oferta-de-empleo/{una}/, /candidatos/, /contacto/) → todas deben responder 200.
+- `python scripts_visuales/snapshot_paginas.py {slug-afectado}` y comparar con la captura previa.
+- Si **cualquiera** falla (HTTP ≠ 200, página visiblemente rota) → restaurar el backup de la Regla 1 **inmediatamente, sin pedir permiso**. Cada minuto con la web rota cuenta.
+
+**Regla 3 — Cambios externos primero se preguntan.** Al inicio de sesión, comparar `snapshots/wp_state/` actual contra el último guardado. Si hay diferencias inesperadas (plugin desactivado, versión WP cambiada, archivo nuevo en `wp-content/`), **preguntar a Pablo antes de "arreglarlo"** — puede ser mantenimiento de NetSolutions.
+
+### 7.4 Convenciones técnicas no negociables (heredadas)
+
+- **`post_content` con JSON**: SIEMPRE `wp_unslash()` antes de `json_decode()`, y `wp_slash(wp_json_encode())` antes de guardar. [Ver `feedback-wp-postcontent-unslash`.]
+- **Antes de modificar `post_content`**: anotar tamaño actual. Tras update, verificar que no se ha reducido dramáticamente.
+- **Revisions de WP** son red de seguridad: `wp post list --post_type=revision --post_parent={id}` para recuperar.
+- **mu-plugins** deben tener cabecera `Plugin Name:` y `if (!defined('ABSPATH')) exit;`.
+- **Endpoints REST custom**: `current_user_can('edit_posts')` mínimo.
+- **Sanitización**: `wp_kses_post()` para HTML, `sanitize_text_field()` para texto plano.
 
 ## 8. Herramientas locales del proyecto
 
@@ -194,8 +213,13 @@
 - `Documents/HG_REPOS/diseno/wp_scripts/` — scripts PHP de mantenimiento (eval-file).
 - `Documents/HG_REPOS/diseno/hg-offer-meta.php` — backup local del mu-plugin REST.
 - `Documents/HG_REPOS/diseno/wp_scripts/hg-frontend-css.php` — backup local del mu-plugin CSS.
+- `Documents/HG_REPOS/diseno/scripts_visuales/` — Playwright: snapshot_paginas.py, snapshot_slider.py, urls_criticas.json.
+- `Documents/HG_REPOS/diseno/scripts_inventario/` — dump_wp_state.sh (estado WP por WP-CLI) y lighthouse_run.sh.
+- `Documents/HG_REPOS/diseno/snapshots/` — capturas regenerables (gitignored): visual/, dom/, console/, wp_state/.
+- `Documents/HG_REPOS/diseno/backups/` — backups locales pre-escritura (Regla 1).
+- `Documents/HG_REPOS/diseno/lighthouse_reports/` — auditorías Lighthouse (versionadas).
 - Memorias relevantes: `project-web-healthgroup`, `feedback-netsolutions-tono`, `feedback-wp-postcontent-unslash`, `project-medicaljobs` (no confundir).
 
 ---
 
-**Última actualización**: 2026-05-22 · Versión 1.0
+**Última actualización**: 2026-05-23 · Versión 1.1 (añadido §7 Protocolo seguridad + scripts visuales/inventario)

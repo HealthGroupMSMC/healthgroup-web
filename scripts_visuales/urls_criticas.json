@@ -1,0 +1,24 @@
+{
+  "base_url": "https://healthgroup.es",
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+  "viewports": {
+    "desktop": {"width": 1440, "height": 900},
+    "mobile":  {"width": 390,  "height": 844}
+  },
+  "wait_after_load_seconds": 8,
+  "urls": [
+    {"slug": "home",            "path": "/"},
+    {"slug": "ofertas-empleo",  "path": "/ofertas-empleo/"},
+    {"slug": "oferta-miranda",  "path": "/oferta-de-empleo/enfermero-a-aplicacion-de-contrastes-miranda-de-ebro/"},
+    {"slug": "candidatos",      "path": "/candidatos/"},
+    {"slug": "contacto",        "path": "/contacto/"},
+    {"slug": "quienes-somos",   "path": "/quienes-somos/"},
+    {"slug": "blog",            "path": "/blog/"}
+  ],
+  "slider_selector_candidates": [
+    ".slider-wrapper",
+    ".flickity-slider",
+    ".ux-slider",
+    ".slider"
+  ]
+}

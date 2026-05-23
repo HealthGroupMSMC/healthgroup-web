@@ -3,9 +3,20 @@ backups/*.sql
 backups/*.wpress
 backups/*.zip
 backups/*.tar.gz
+backups/*.txt
+backups/*.html
+backups/*.php
+backups/*.json
+
+# === Snapshots de tooling de visibilidad (regenerables) ===
+snapshots/
+!snapshots/INDEX.json
 
 # === Lighthouse reports JSON (grandes, regenerables) ===
 lighthouse_reports/*.json
+
+# === Logs operativos ===
+logs/
 
 # === Imágenes pesadas DALL-E (privadas, no versionar en remoto público) ===
 # Si en algún momento queremos compartir, mover a /assets/ y quitar de aquí.

@@ -3,7 +3,7 @@
  * Plugin Name: HG - Frontend CSS (paleta y fixes Select2/WPForms)
  * Description: Inyecta CSS personalizado de Health Group en wp_head con prioridad alta.
  *              Necesario porque el custom_css del Customizer no se imprime con el tema Flatsome.
- * Version: 1.0
+ * Version: 1.1
  * Author: Health Group
  *
  * Destino: wp-content/mu-plugins/hg-frontend-css.php
@@ -127,6 +127,24 @@ body .select2-container .select2-selection__arrow {
 .wpforms-container button[type="submit"]:hover,
 .wpforms-container input[type="submit"]:hover {
     background-color: #4DA68C !important;
+}
+
+/* === HG: Fix solapamiento visual en Newsletter del footer (CF7 #85) ===
+ * El plugin Cloudflare Turnstile inserta un div con `margin-bottom:-15px`
+ * inline que tira hacia arriba el siguiente elemento (.wpcf7-acceptance),
+ * solapandolo con el border-bottom del input email del .flex-row.form-flat.
+ * El usuario percibia esto como un "tachado" sobre "Politica de Privacidad".
+ * Diagnosticado 2026-05-23 con tooling Playwright. */
+#footer .cf7-cf-turnstile,
+.footer-wrapper .cf7-cf-turnstile,
+footer .cf7-cf-turnstile {
+    margin-bottom: 0 !important;
+}
+#footer .wpcf7-acceptance,
+.footer-wrapper .wpcf7-acceptance,
+footer .wpcf7-acceptance {
+    display: inline-block;
+    margin-top: 14px;
 }
 </style>
     <?php
