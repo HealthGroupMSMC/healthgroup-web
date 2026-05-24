@@ -1,0 +1,47 @@
+[section bg="205382" bg_size="orginal" dark="true" padding="60px"]
+
+<h1 class="uppercase" style="text-align: center; font-weight: 100; letter-spacing: 1px; font-size: 250%;">ofertas de empleo sanitario</h1>
+[divider align="center" width="50px" color="rgb(94, 186, 158)"]
+
+
+[/section]
+[section padding="60px"]
+
+[row]
+
+[col span="8" span__sm="12"]
+
+<h2 style="color: #1B3A5C; font-weight: 600; margin-bottom: 8px;">Ofertas activas</h2>
+<p style="color: #555; margin-bottom: 28px; font-size: 16px;">Selecciona la oferta que se ajusta a tu perfil. Aplica directamente desde su ficha; recibirás respuesta de nuestro equipo de selección en menos de 24 horas.</p>
+[wpv-view name="ofertas"]
+
+[/col]
+[col span="4" span__sm="12" padding="32px 28px 28px 28px" bg_color="#5EBA9E" radius="6"]
+
+<h3 style="color: #FFFFFF; margin-top: 0; margin-bottom: 6px; font-weight: 600;">¿Quieres saber primero de nuevas vacantes?</h3>
+<p style="color: #FFFFFF; opacity: 0.92; margin-bottom: 20px;">Déjanos tus datos y te avisaremos cuando una oferta encaje con tu perfil.</p>
+[contact-form-7 id="205104"]
+
+
+[/col]
+
+[/row]
+
+
+[/section]
+[section padding="50px 0px 50px 0px" bg_color="#F5F5F2"]
+
+[row]
+
+[col span__sm="12" align="center"]
+
+<h2 style="color: #1B3A5C; margin-bottom: 16px;">Confía en la garantía de Health Group</h2>
+<p style="font-size: 18px; color: #444; max-width: 720px; margin: 0 auto; line-height: 1.5;">Más de 20 años conectando profesionales sanitarios con los principales hospitales y centros de toda España. Selección directa, sin intermediarios.</p>
+
+
+[/col]
+
+[/row]
+
+
+[/section]

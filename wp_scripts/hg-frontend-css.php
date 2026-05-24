@@ -3,7 +3,7 @@
  * Plugin Name: HG - Frontend CSS (paleta y fixes Select2/WPForms)
  * Description: Inyecta CSS personalizado de Health Group en wp_head con prioridad alta.
  *              Necesario porque el custom_css del Customizer no se imprime con el tema Flatsome.
- * Version: 1.1
+ * Version: 1.2
  * Author: Health Group
  *
  * Destino: wp-content/mu-plugins/hg-frontend-css.php
@@ -145,6 +145,24 @@ footer .cf7-cf-turnstile {
 footer .wpcf7-acceptance {
     display: inline-block;
     margin-top: 14px;
+}
+
+/* === HG: Listado de ofertas en /ofertas-empleo/ — 2 cards por fila ===
+ * La Toolset View "ofertas" (ID 204991) usa Bootstrap col-sm-3 (4 cards/fila)
+ * que con solo 3 ofertas activas en un col span=8 quedaba muy apretado.
+ * Forzamos 2 cards por fila para dar respiracion visual.
+ * Aplica solo a /ofertas-empleo/ (post 13). */
+body.page-id-13 .col-sm-3 {
+    width: 50% !important;
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+}
+@media (max-width: 768px) {
+    body.page-id-13 .col-sm-3 {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
 }
 </style>
     <?php
