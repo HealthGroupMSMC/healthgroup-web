@@ -3,7 +3,7 @@
  * Plugin Name: HG - Frontend CSS (paleta y fixes Select2/WPForms)
  * Description: Inyecta CSS personalizado de Health Group en wp_head con prioridad alta.
  *              Necesario porque el custom_css del Customizer no se imprime con el tema Flatsome.
- * Version: 1.2
+ * Version: 1.4
  * Author: Health Group
  *
  * Destino: wp-content/mu-plugins/hg-frontend-css.php
@@ -140,11 +140,38 @@ body .select2-container .select2-selection__arrow {
 footer .cf7-cf-turnstile {
     margin-bottom: 0 !important;
 }
-#footer .wpcf7-acceptance,
-.footer-wrapper .wpcf7-acceptance,
-footer .wpcf7-acceptance {
-    display: inline-block;
-    margin-top: 14px;
+/* Acceptance generico (CF7): SIEMPRE con respiracion vertical y word-wrap.
+ * Cubre 3 issues detectados 2026-05-25: solapamiento submit/acceptance en
+ * /ofertas-empleo/ (form CF7 #205104) y en oferta singular, ademas del
+ * fix original del Newsletter footer (form CF7 #85).
+ * Nota: el span.wpcf7-acceptance va dentro de <p> con margin 0, asi que
+ * el spacing real lo damos al <p> padre y al submit que viene despues. */
+.wpcf7-acceptance {
+    display: block !important;
+}
+.wpcf7-list-item-label {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+/* <p> que contiene el form-control-wrap del acceptance: respiracion bajo */
+.wpcf7-form p:has(.wpcf7-acceptance) {
+    margin-bottom: 18px !important;
+}
+/* Submit en CF7: siempre margin-top para no pegarse al elemento previo */
+.wpcf7-submit {
+    margin-top: 14px !important;
+}
+
+/* WPForms 206853 (form de candidatura en oferta singular): respiracion
+ * entre el campo GDPR/checkbox y el boton Enviar. */
+.wpforms-container .wpforms-field-gdpr-checkbox,
+.wpforms-container .wpforms-field-checkbox:last-of-type {
+    margin-bottom: 18px !important;
+}
+.wpforms-container .wpforms-field-gdpr-checkbox label,
+.wpforms-container .wpforms-field-checkbox label {
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 /* === HG: Listado de ofertas en /ofertas-empleo/ — 2 cards por fila ===
@@ -152,10 +179,20 @@ footer .wpcf7-acceptance {
  * que con solo 3 ofertas activas en un col span=8 quedaba muy apretado.
  * Forzamos 2 cards por fila para dar respiracion visual.
  * Aplica solo a /ofertas-empleo/ (post 13). */
+/* La Toolset View genera 4 col-sm-3 siempre; los sin oferta quedan :empty */
+body.page-id-13 .col-sm-3:empty {
+    display: none !important;
+}
 body.page-id-13 .col-sm-3 {
     width: 50% !important;
     flex: 0 0 50% !important;
     max-width: 50% !important;
+}
+/* Si solo hay 1 col-sm-3 con contenido (no tiene hermano no-vacío), 100% */
+body.page-id-13 .row:not(:has(.col-sm-3:not(:empty) ~ .col-sm-3:not(:empty))) .col-sm-3:not(:empty) {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
 }
 @media (max-width: 768px) {
     body.page-id-13 .col-sm-3 {

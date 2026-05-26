@@ -12,8 +12,10 @@ backups/*.json
 snapshots/
 !snapshots/INDEX.json
 
-# === Lighthouse reports JSON (grandes, regenerables) ===
+# === Lighthouse reports (grandes, regenerables) ===
 lighthouse_reports/*.json
+lighthouse_reports/**/*.json
+lighthouse_reports/**/*.html
 
 # === Logs operativos ===
 logs/
